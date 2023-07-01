@@ -3,6 +3,7 @@ import transitions
 
 transition_table = transitions.transition_table
 accepting_states = transitions.accepting_states
+reserved_words = transitions.reserved_words
 
 
 def check_word(word):
@@ -42,24 +43,28 @@ def check_word(word):
         " ": lambda c: c == " "
     }
 
-    # Accumulate characters until no valid transition exists
-    for char in word:
-        char_type = 'other'
-        # Check the type of character
-        for type_name, char_check in char_types.items():
-            if char_check(char):
-                char_type = type_name
-                break
+    if word in reserved_words:
+        word_type = 'Reserved word'
 
-        # Check if there is a transition defined for the current state and input character
-        if current_state in transition_table and char_type in transition_table[current_state]:
-            current_state = transition_table[current_state][char_type]
-        else:
-            break  # No valid transition, stop accumulating
+    else:
+        # Accumulate characters until no valid transition exists
+        for char in word:
+            char_type = 'other'
+            # Check the type of character
+            for type_name, char_check in char_types.items():
+                if char_check(char):
+                    char_type = type_name
+                    break
 
-    # Check if the final state is an accepting state
-    if current_state in accepting_states:
-        word_type = accepting_states[current_state]
+            # Check if there is a transition defined for the current state and input character
+            if current_state in transition_table and char_type in transition_table[current_state]:
+                current_state = transition_table[current_state][char_type]
+            else:
+                break  # No valid transition, stop accumulating
+
+        # Check if the final state is an accepting state
+        if current_state in accepting_states:
+            word_type = accepting_states[current_state]
 
     return word_type
 
@@ -99,7 +104,11 @@ for i, char in enumerate(content):
         if char == '\n':
             word = ''
         else:
-            print(char, 'Ivalid statement')
+            word_type = check_word(word)
+            if word_type:
+                print(f'{word.strip()} is a valid {word_type}')
+                word = ''  # Reset the word to start accumulating the next word
+                current_state = 'q0'
 
         current_state = 'q0'
 

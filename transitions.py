@@ -158,3 +158,28 @@ accepting_states = {
     'q33': 'Square Brac Close',
     'q34': 'colon'
 }
+
+reserved_words = {
+    'init',
+    'end',
+    'array',
+    'then',
+    'var',
+    'endif',
+    'integer',
+    'else',
+    'until',
+    'string',
+    'for',
+    'write',
+    'do',
+    'if',
+    'char',
+    'while',
+    'bool',
+    'read',
+    'true',
+    'false',
+    'of',
+    'decimal'
+}
