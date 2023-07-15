@@ -1,1 +1,11 @@
-'Kieres ser mi amigo??'
+$ programa $Programa1 ;
+variable $num1 : enteros ;
+{
+    leer ( $num1 ) ;
+    si $num1 >= 5 entonces {
+        escribir ( 'Numero mayor a 5' ) ;
+    } Sino {
+        escribir ( 'Numero menor a 5' ) ;
+    }
+    fin_sino ;
+} .
