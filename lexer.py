@@ -1,4 +1,4 @@
-import re
+import subprocess
 import transitions
 
 transition_table = transitions.transition_table
@@ -143,8 +143,7 @@ for i, char in enumerate(content):
                 word_type = check_word(word.strip())
                 if word_type:
                     lexer_write(word_type)
-
-                    print(f'{word.strip()} is a valid {word_type}')
+                    print(word.strip())
                     word = ''  # Reset the word to start accumulating the next word
                     current_state = 'q0'
 
@@ -160,3 +159,13 @@ for i, char in enumerate(content):
                 current_state = 'q0'
             else:
                 print(f'{word} is invalid')
+
+
+'''
+RUN SYNTAX ANALYZER
+# Specify the path to the Python file you want to execute
+file_path = 'syntax.py'
+
+# Execute the Python file
+subprocess.run(['python', file_path])
+'''

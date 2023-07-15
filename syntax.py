@@ -81,7 +81,7 @@ class SyntaxAnalyzer:
 
     def tipos(self):
         # Production rule: TIPOS -> ESTANDAR | VECTORES
-        if self.current_token in ['enteros', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
+        if self.current_token in ['int', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
             self.estandar()
         elif self.current_token == 'arreglo':
             self.vectores()
@@ -90,20 +90,20 @@ class SyntaxAnalyzer:
                 f"Syntax error: Unexpected token {self.current_token}")
 
     def estandar(self):
-        # Production rule: ESTANDAR -> enteros | real | cadena | byte | caracter | booleano
-        if self.current_token in ['enteros', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
+        # Production rule: ESTANDAR -> int | real | cadena | byte | caracter | booleano
+        if self.current_token in ['int', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
             self.match(self.current_token)
         else:
             raise SyntaxError(
                 f"Syntax error: Expected a standard type, found {self.current_token}")
 
     def vectores(self):
-        # Production rule: VECTORES -> arreglo [ enteros .. enteros ] de ESTANDAR
+        # Production rule: VECTORES -> arreglo [ int .. int ] de ESTANDAR
         self.match('arreglo')
         self.match('[')
-        self.match('enteros')
+        self.match('int')
         self.match('..')
-        self.match('enteros')
+        self.match('int')
         self.match(']')
         self.match('de')
         self.estandar()
@@ -298,7 +298,7 @@ class SyntaxAnalyzer:
             self.match(')')
         elif self.current_token == 'id':
             self.variables()
-        elif self.current_token in ['int', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
+        elif self.current_token in ['entero', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
             self.constantes()
         elif self.current_token == 'no':
             self.match('no')
@@ -308,8 +308,8 @@ class SyntaxAnalyzer:
                 f"Syntax error: Unexpected token {self.current_token}")
 
     def constantes(self):
-        # Production rule: CONSTANTES -> int | real | cadena | caracter | verdadero | falso
-        if self.current_token in ['int', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
+        # Production rule: CONSTANTES -> entero | real | cadena | caracter | verdadero | falso
+        if self.current_token in ['entero', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
             self.match(self.current_token)
         else:
             raise SyntaxError(

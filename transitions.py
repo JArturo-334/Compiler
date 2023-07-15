@@ -133,7 +133,7 @@ transition_table = {
 # Define the accepting states and their corresponding types
 accepting_states = {
     'q2': 'id',
-    'q3': 'int',
+    'q3': 'entero',
     'q5': 'real',
     'q8': 'cadena',
     'q9': '/',
@@ -177,7 +177,6 @@ reserved_words = {
     'cadena',
     'real',
     'caracter',
-    'enteros',
 
     'leer',
     'escribir',

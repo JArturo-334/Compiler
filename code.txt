@@ -1,5 +1,5 @@
 $ programa $Programa1 ;
-variable $num1 : enteros ;
+variable $num1 : int ;
 {
     leer ( $num1 ) ;
     si $num1 >= 5 entonces {
