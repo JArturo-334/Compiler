@@ -241,9 +241,9 @@ class SyntaxAnalyzer:
         self.aux8()
 
     def aux8(self):
-        # Production rule: AUX8 -> sino { ESTATUTOS } fin_sino | fin_sino
-        if self.current_token == 'sino':
-            self.match('sino')
+        # Production rule: AUX8 -> Sino { ESTATUTOS } fin_sino | fin_sino
+        if self.current_token == 'Sino':
+            self.match('Sino')
             self.match('{')
             self.estatutos()
             self.match('}')
@@ -298,7 +298,7 @@ class SyntaxAnalyzer:
             self.match(')')
         elif self.current_token == 'id':
             self.variables()
-        elif self.current_token in ['entero', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
+        elif self.current_token in ['int', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
             self.constantes()
         elif self.current_token == 'no':
             self.match('no')
@@ -308,15 +308,15 @@ class SyntaxAnalyzer:
                 f"Syntax error: Unexpected token {self.current_token}")
 
     def constantes(self):
-        # Production rule: CONSTANTES -> entero | real | cadena | caracter | verdadero | falso
-        if self.current_token in ['entero', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
+        # Production rule: CONSTANTES -> int | real | cadena | caracter | verdadero | falso
+        if self.current_token in ['int', 'real', 'cadena', 'caracter', 'verdadero', 'falso']:
             self.match(self.current_token)
         else:
             raise SyntaxError(
                 f"Syntax error: Expected a constant value, found {self.current_token}")
 
 
-with open('code.txt', 'r') as file:
+with open('lexical_result.txt', 'r') as file:
     content = file.read()
 
 tokens = content.split()
