@@ -1,11 +1,18 @@
-$ programa $Programa1 ;
-variable $num1 : int ;
-{
-    leer ( $num1 ) ;
-    si $num1 >= 5 entonces {
-        escribir ( 'Numero mayor a 5' ) ;
-    } Sino {
-        escribir ( 'Numero menor a 5' ) ;
-    }
-    fin_sino ;
+$ programa $example ;
+variable $id1 : int ;
+variable $id2 : real ;
+variable $id3 : cadena ;
+variable $id4 : int ;
+variable $id5 : caracter ;
+variable $id6 : booleano ;
+variable $id7 : arreglo [ int .. int ] de real ;
+{ 
+    $id1 = 10 ;
+    $id2 = 3.14 ;
+    $id3 = 'Hello world!' ;
+    $id4 = 255 ;
+    $id5 = 'A' ;
+    $id6 = verdadero ;
+    $id7[1] = 1.23 ;
+    $id7[2] = 4.56 ;
 } .

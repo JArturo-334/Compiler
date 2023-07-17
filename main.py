@@ -1,9 +1,11 @@
 import subprocess
 import transitions
+import symbol_table
 
 transition_table = transitions.transition_table
 accepting_states = transitions.accepting_states
 reserved_words = transitions.reserved_words
+obj_symbols_table = symbol_table.SymbolTable()
 
 
 # Clear content in lexical_result.txt
@@ -77,6 +79,7 @@ def check_word(word):
     return word_type
 
 
+# Check symbol to change according to transition table rules -------------------------
 def check_symbol(sym):
     if sym.isalpha():
         sym = 'letter'
@@ -87,52 +90,96 @@ def check_symbol(sym):
     return sym
 
 
-# Read words from file and process characters individually
+# Read words from file and process characters individually --------------------------
 with open('code.txt', 'r') as file:
     content = file.read()
 
 word = ''
 current_state = 'q0'
 
-# Write in a new file
 
-
+# Write in a new file ---------------------------------------------------------------
 def lexer_write(line):
     with open('lexical_result.txt', 'a') as f:
         f.write(f'{line} ')
 
 
+# Check first and last code symbols -------------------------------------------------
 first_symbol = content[0]
 end_symbol = content[len(content)-1]
 
-for i, char in enumerate(content):
 
-    if i == len(content)-1:
-        if end_symbol == '.':
-            lexer_write(end_symbol)
-            continue
+def check_first_symbol():
+    return first_symbol == '$' or print('Program must start with "$" symbol')
+
+
+def check_last_symbol():
+    return end_symbol == '.' or print('Program must end with "." symbol')
+
+
+# Function for symbols table actions --------------------------------------------------
+# Find variables and process their declarations
+def process_variable_declarations(content):
+    variable_start = content.find('variable')
+    while variable_start != -1:
+        semicolon_index = content.find(';', variable_start)
+        if semicolon_index != -1:
+            variable_line = content[variable_start:semicolon_index+1]
+            process_variable_split(variable_line)
+            variable_start = content.find('variable', semicolon_index)
         else:
-            print('Program must end with "." symbol')
             break
 
+# Process a single variable declaration
+
+
+def process_variable_split(variable_line):
+    parts = variable_line.split(':')
+    if len(parts) == 2:
+        variable_info = parts[0].strip().split()
+        if len(variable_info) >= 2:
+            variable_name = variable_info[1]
+            variable_type = parts[1].strip().rstrip(';')
+            symbols_table_actions(variable_name, variable_type)
+
+
+def symbols_table_actions(identifier_name, identifier_type):
+    already_in_symTable = obj_symbols_table.lookup(
+        identifier_name.strip())
+
+    if already_in_symTable:
+        obj_symbols_table.update_attributes(
+            identifier_name.strip(), {"type": identifier_type, "value": identifier_name, "scope": "global"})
+
+    else:
+        obj_symbols_table.insert(
+            identifier_name.strip(), {"type": identifier_type, "value": None, "scope": "global"})
+
+
+# Review code ------------------------------------------------------------------------
+word_type = ''
+
+for i, char in enumerate(content):
+
     if i == 0:
-        if first_symbol == '$':
+        if check_first_symbol():
             lexer_write(first_symbol)
             continue
         else:
-            print('Program must start with $ symbol')
+            break
+
+    if i == len(content)-1:
+        if check_last_symbol():
+            lexer_write(end_symbol)
+            continue
+        else:
             break
 
     else:
         word += char
-
         char = check_symbol(char)
-
         next_char = content[i + 1] if i + 1 < len(content) else ''
         next_char = check_symbol(next_char)
-
-        if i == len(content) - 1:
-            next_char = ''
 
         current_state = transition_table[current_state].get(char, None)
 
@@ -143,9 +190,10 @@ for i, char in enumerate(content):
                 word_type = check_word(word.strip())
                 if word_type:
                     lexer_write(word_type)
-                    print(word.strip())
                     word = ''  # Reset the word to start accumulating the next word
                     current_state = 'q0'
+                elif next_char == ' ' or next_char == '\n':
+                    print(word, 'is invalid')
 
             current_state = 'q0'
 
@@ -154,7 +202,6 @@ for i, char in enumerate(content):
             word_type = check_word(word.strip())
             if word_type:
                 lexer_write(word_type)
-                print(f'{word_type}')
                 word = ''  # Reset the word to start accumulating the next word
                 current_state = 'q0'
             else:
@@ -169,3 +216,5 @@ file_path = 'syntax.py'
 # Execute the Python file
 subprocess.run(['python', file_path])
 '''
+process_variable_declarations(content)
+obj_symbols_table.print_table()
