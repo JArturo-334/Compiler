@@ -192,5 +192,6 @@ reserved_words = {
 
     'verdadero',
     'falso',
-    '..'
+    '..',
+    'de'
 }
