@@ -1,6 +1,3 @@
-import re
-
-
 class SyntaxAnalyzer:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -60,7 +57,8 @@ class SyntaxAnalyzer:
 
     def aux1(self):
         # Production rule: AUX1 -> LISTAID : TIPOS ; AUX1 | EPSILON
-        if self.current_token == 'id':
+        if self.current_token == 'variable':
+            self.match('variable')
             self.listaid()
             self.match(':')
             self.tipos()
@@ -148,10 +146,20 @@ class SyntaxAnalyzer:
                 f"Syntax error: Unexpected token {self.current_token}")
 
     def asignacion(self):
-        # Production rule: ASIGNACION -> VARIABLES = EXPRESION
+        # Production rule: ASIGNACION -> VARIABLES = EXPRESION | VARIABLES [ EXPRESION ] = EXPRESION
         self.variables()
-        self.match('=')
-        self.expresion()
+        if self.current_token == '=':
+            self.match('=')
+            self.expresion()
+        elif self.current_token == '[':
+            self.match('[')
+            self.expresion()
+            self.match(']')
+            self.match('=')
+            self.expresion()
+        else:
+            raise SyntaxError(
+                f"Syntax error: Invalid assignment syntax at {self.current_token}")
 
     def variables(self):
         # Production rule: VARIABLES -> id AUX5
@@ -173,10 +181,10 @@ class SyntaxAnalyzer:
         self.expresion()
 
     def ciclopara(self):
-        # Production rule: CICLOPARA -> para CONTADOR do { ESTATUTOS }
+        # Production rule: CICLOPARA -> para CONTADOR hacer { ESTATUTOS }
         self.match('para')
         self.contador()
-        self.match('do')
+        self.match('hacer')
         self.match('{')
         self.estatutos()
         self.match('}')
