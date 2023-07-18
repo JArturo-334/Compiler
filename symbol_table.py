@@ -19,6 +19,12 @@ class SymbolTable:
                     return entry[1]  # Return the attributes
         return None  # Identifier not found
 
+    def get_attribute(self, identifier, attribute):
+        attributes = self.lookup(identifier)
+        if attributes and attribute in attributes:
+            return attributes[attribute]
+        return None  # Identifier not found or attribute not found
+
     def update_attributes(self, identifier, new_attributes):
         hash_value = self._hash(identifier)
         if hash_value in self.table:

@@ -140,6 +140,9 @@ def process_variable_split(variable_line):
         if len(variable_info) >= 2:
             variable_name = variable_info[1]
             variable_type = parts[1].strip().rstrip(';').strip()
+            if 'arreglo' in variable_type:
+                arreglo_parts = variable_type.split('[')
+                variable_type = arreglo_parts[0].strip()
             if variable_type in data_types:
                 symbols_table_type(variable_name, variable_type)
             else:
@@ -163,7 +166,7 @@ def symbols_table_type(identifier_name, identifier_type):
 
     if already_in_symTable:
         obj_symbols_table.update_attributes(
-            id_name, {'type': identifier_type, 'value': None, 'scope': 'global'})
+            id_name, {'type': identifier_type, 'value': obj_symbols_table.get_attribute(id_name, "value"), 'scope': 'global'})
 
     else:
         obj_symbols_table.insert(
@@ -238,7 +241,8 @@ for i, char in enumerate(content):
 
                 if word_type == '=' and last_word_type == 'id':
                     var_value = get_variable_value(i)
-                    if check_word(var_value):
+                    var_value_type = check_word(var_value)
+                    if var_value_type:
                         symbols_table_value(current_id, var_value)
 
                 lexer_write(word_type)
@@ -249,7 +253,7 @@ for i, char in enumerate(content):
 
 
 '''
-RUN SYNTAX ANALYZER
+#RUN SYNTAX ANALYZER
 # Specify the path to the Python file you want to execute
 file_path = 'syntax.py'
 
