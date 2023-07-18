@@ -165,7 +165,6 @@ reserved_words = {
     'principal',
 
     'init',
-    'arreglo',
 
     'si',
     'Sino',
@@ -177,6 +176,7 @@ reserved_words = {
     'cadena',
     'real',
     'caracter',
+    'arreglo',
 
     'leer',
     'escribir',
@@ -187,11 +187,18 @@ reserved_words = {
     'para',
     'hacer',
 
-    'do',
     'booleano',
-
     'verdadero',
     'falso',
     '..',
     'de'
+}
+
+data_types = {
+    'int',
+    'cadena',
+    'real',
+    'caracter',
+    'arreglo',
+    'booleano',
 }
