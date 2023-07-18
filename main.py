@@ -382,4 +382,7 @@ file_path = 'syntax.py'
 subprocess.run(['python', file_path])
 '''
 
+with open('SYMBOLS_TABLE.txt', 'w') as sym_file:
+    sym_file.write('')
+
 obj_symbols_table.print_table()

@@ -44,7 +44,9 @@ class SymbolTable:
         for hash_value in self.table:
             entries = self.table[hash_value]
             for entry in entries:
-                print(f"Variable: {entry[0]}, Attributes: {entry[1]}")
+                with open('SYMBOLS_TABLE.txt', 'a') as sym_file:
+                    sym_file.write(
+                        f"Variable: {entry[0]}, Attributes: {entry[1]} \n")
 
     def _hash(self, identifier):
         # Simple hash function using Python's built-in hash function
