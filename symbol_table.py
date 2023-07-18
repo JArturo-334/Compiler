@@ -25,7 +25,9 @@ class SymbolTable:
             entries = self.table[hash_value]
             for i, entry in enumerate(entries):
                 if entry[0] == identifier:
-                    entries[i] = (identifier, new_attributes)
+                    current_attributes = entry[1]
+                    current_attributes.update(new_attributes)
+                    entries[i] = (identifier, current_attributes)
                     return True  # Attribute updated successfully
         return False  # Identifier not found or attribute not updated
 
@@ -50,7 +52,7 @@ symbol_table.insert("y", {"type": "float", "value": 3.14})
 symbol_table.insert("z", {"type": "string", "value": "Hello"})
 
 # Update attributes of an identifier
-if symbol_table.update_attributes("x", {"type": "float", "value": 3.5}):
+if symbol_table.update_attributes("x", {"value": 50000}):
     print("Attributes of 'x' updated successfully")
 else:
     print("'x' not found in the symbol table")
