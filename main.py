@@ -174,13 +174,33 @@ def symbols_table_type(identifier_name, identifier_type):
 
 
 def symbols_table_value(identifier_name, identifier_value):
+
+    def update():
+        obj_symbols_table.update_attributes(
+            id_name, {'value': identifier_value})
+
     id_name = identifier_name.strip()
+    id_type = obj_symbols_table.get_attribute(id_name, "type")
 
     already_in_symTable = obj_symbols_table.lookup(id_name)
 
     if already_in_symTable:
-        obj_symbols_table.update_attributes(
-            id_name, {'value': identifier_value})
+        if id_type == 'booleano':
+            if identifier_value == 'verdadero' or identifier_value == 'falso':
+                update()
+            else:
+                identifier_value = 'Not correct data type booleano'
+                update()
+        elif id_type == 'caracter' and len(identifier_value.strip()) == 3:
+            if check_word(identifier_value) == 'cadena':
+                update()
+
+        elif id_type == check_word(identifier_value):
+            update()
+
+        else:
+            identifier_value = 'Not correct data type'
+            update()
 
 
 process_variable_declarations(content)
@@ -232,9 +252,6 @@ for i, char in enumerate(content):
             # Exclude the current character
             word_type = check_word(word.strip())
             if word_type:
-
-                if word_type == 'cadena' and len(word.strip()) == 3:
-                    word_type = 'caracter'
 
                 if word_type == 'id':
                     current_id = word
