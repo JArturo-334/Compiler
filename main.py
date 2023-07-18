@@ -1,4 +1,5 @@
 import subprocess
+import re
 import transitions
 import symbol_table
 
@@ -133,6 +134,11 @@ def process_variable_declarations(content):
 
 
 # Process a single variable declaration
+arreglo_type = ''
+arreglo_types_dict = {}
+arreglo_values_dict = {}
+
+
 def process_variable_split(variable_line):
     parts = variable_line.split(':')
     if len(parts) == 2:
@@ -141,9 +147,34 @@ def process_variable_split(variable_line):
             variable_name = variable_info[1]
             variable_type = parts[1].strip().rstrip(';').strip()
             if 'arreglo' in variable_type:
+                arr_is_valid = True
+                arreglo_type = ''
+                arreglo_attributes = []
                 arreglo_parts = variable_type.split('[')
                 variable_type = arreglo_parts[0].strip()
-            if variable_type in data_types:
+
+                arr_declaration = re.split(
+                    r'\s*]\s*de', arreglo_parts[1])
+
+                for attribute in arr_declaration[0].split('..'):
+                    arreglo_attributes.append(attribute.strip())
+
+                arreglo_type = arr_declaration[1].strip()
+
+                for arr_attribute in arreglo_attributes:
+                    if arr_attribute == arreglo_type:
+                        continue
+                    else:
+                        arr_is_valid = False
+                        print('Arreglo has different data types declaration')
+                        break
+
+                if arr_is_valid:
+                    symbols_table_type(variable_name, variable_type)
+                    symbols_table_value(variable_name, [])
+                    create_arreglo_types(variable_name, arreglo_attributes)
+
+            elif variable_type in data_types:
                 symbols_table_type(variable_name, variable_type)
             else:
                 print(variable_name, ' invalid data type')
@@ -157,6 +188,17 @@ def get_variable_value(assignation_start):
         variable_value = value_line.strip()
 
         return variable_value
+
+
+def get_variable_value_arr(assignation_start):
+    semicolon_index = content.find(';', assignation_start)
+    if semicolon_index != -1:
+        value_line = content[assignation_start + 1:semicolon_index]
+        result = re.findall(r'\d+(?:\.\d+)?', value_line)
+        var_arreglo_index = result[0]
+        var_arreglo_value = result[1]
+
+        return var_arreglo_value, var_arreglo_index
 
 
 def symbols_table_type(identifier_name, identifier_type):
@@ -191,9 +233,13 @@ def symbols_table_value(identifier_name, identifier_value):
             else:
                 identifier_value = 'Not correct data type booleano'
                 update()
+
         elif id_type == 'caracter' and len(identifier_value.strip()) == 3:
             if check_word(identifier_value) == 'cadena':
                 update()
+
+        elif id_type == 'arreglo':
+            update()
 
         elif id_type == check_word(identifier_value):
             update()
@@ -201,6 +247,55 @@ def symbols_table_value(identifier_name, identifier_value):
         else:
             identifier_value = 'Not correct data type'
             update()
+
+    else:
+        print(identifier_name, ': undefined')
+
+
+def values_arreglo(identifier_name, identifier_value, idemtifier_index):
+
+    def update():
+        obj_symbols_table.update_attributes(
+            id_name, {'value': arreglo_values_dict[id_name+'_array']})
+
+    id_name = identifier_name.strip()
+    id_type = obj_symbols_table.get_attribute(id_name, "type")
+
+    already_in_symTable = obj_symbols_table.lookup(id_name)
+
+    if already_in_symTable:
+        if id_type == 'arreglo':
+            if (id_name+'_array') in arreglo_values_dict:
+                update_arreglo_values(
+                    id_name, int(idemtifier_index), identifier_value)
+                update()
+            else:
+                create_arreglo_values(id_name)
+                update_arreglo_values(
+                    id_name, int(idemtifier_index), identifier_value)
+                update()
+
+    else:
+        print(identifier_name, ': undefined')
+
+# Handle_arrays
+
+
+def create_arreglo_types(identifier_name, new_arr_types):
+    key = (identifier_name + '_array')
+    arreglo_types_dict[key] = new_arr_types
+
+
+def create_arreglo_values(identifier_name):
+    key = (identifier_name + '_array')
+    arreglo_values_dict[key] = []
+
+
+def update_arreglo_values(identifier_name, add_arreglo_value, arreglo_position):
+    key = (identifier_name + '_array')
+    arreglo_values_dict[key].insert(
+        add_arreglo_value, arreglo_position)
+    return arreglo_values_dict[key]
 
 
 process_variable_declarations(content)
@@ -261,6 +356,15 @@ for i, char in enumerate(content):
                     var_value_type = check_word(var_value)
                     if var_value_type:
                         symbols_table_value(current_id, var_value)
+
+                if word_type == '[' and last_word_type == 'id':
+                    var_value, var_index = get_variable_value_arr(i)
+                    var_value_type = check_word(var_value)
+                    if var_value_type and var_index:
+                        values_arreglo(
+                            current_id, var_value, var_index)
+                    else:
+                        print('Cannot insert arreglo values')
 
                 lexer_write(word_type)
                 word = ''  # Reset the word to start accumulating the next word
