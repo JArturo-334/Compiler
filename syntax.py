@@ -88,7 +88,7 @@ class SyntaxAnalyzer:
                 f"Syntax error: Unexpected token {self.current_token}")
 
     def estandar(self):
-        # Production rule: ESTANDAR -> int | real | cadena | byte | caracter | booleano
+        # Production rule: ESTANDAR -> entero | real | cadena | byte | caracter | booleano
         if self.current_token in ['entero', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
             self.match(self.current_token)
         else:
@@ -96,12 +96,12 @@ class SyntaxAnalyzer:
                 f"Syntax error: Expected a standard type, found {self.current_token}")
 
     def vectores(self):
-        # Production rule: VECTORES -> arreglo [ int .. int ] de ESTANDAR
+        # Production rule: VECTORES -> arreglo [ entero .. entero ] de ESTANDAR
         self.match('arreglo')
         self.match('[')
-        self.match('int')
+        self.match('entero')
         self.match('..')
-        self.match('int')
+        self.match('entero')
         self.match(']')
         self.match('de')
         self.estandar()
