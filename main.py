@@ -5,6 +5,7 @@ import symbol_table
 transition_table = transitions.transition_table
 accepting_states = transitions.accepting_states
 reserved_words = transitions.reserved_words
+data_types = transitions.data_types
 obj_symbols_table = symbol_table.SymbolTable()
 
 
@@ -31,23 +32,23 @@ def check_word(word):
         '>': lambda c: c == '>',
         '<': lambda c: c == '<',
         '!': lambda c: c == '!',
-        "+": lambda c: c == "+",
+        '+': lambda c: c == '+',
         '-': lambda c: c == '-',
         ';': lambda c: c == ';',
         '&': lambda c: c == '&',
         '|': lambda c: c == '|',
-        "{": lambda c: c == "{",
-        "}": lambda c: c == "}",
+        '{': lambda c: c == '{',
+        '}': lambda c: c == '}',
         '(': lambda c: c == '(',
         ')': lambda c: c == ')',
         '[': lambda c: c == '[',
         ']': lambda c: c == ']',
-        ":": lambda c: c == ":",
+        ':': lambda c: c == ':',
         '?': lambda c: c == '?',
-        "¿": lambda c: c == "¿",
+        '¿': lambda c: c == '¿',
         '!': lambda c: c == '!',
-        "¡": lambda c: c == "¡",
-        " ": lambda c: c == " "
+        '¡': lambda c: c == '¡',
+        ' ': lambda c: c == ' '
     }
 
     if word in reserved_words:
@@ -130,36 +131,63 @@ def process_variable_declarations(content):
         else:
             break
 
+
 # Process a single variable declaration
-
-
 def process_variable_split(variable_line):
     parts = variable_line.split(':')
     if len(parts) == 2:
         variable_info = parts[0].strip().split()
         if len(variable_info) >= 2:
             variable_name = variable_info[1]
-            variable_type = parts[1].strip().rstrip(';')
-            symbols_table_actions(variable_name, variable_type)
+            variable_type = parts[1].strip().rstrip(';').strip()
+            if variable_type in data_types:
+                symbols_table_type(variable_name, variable_type)
+            else:
+                print(variable_name, ' invalid data type')
 
 
-def symbols_table_actions(identifier_name, identifier_type):
-    already_in_symTable = obj_symbols_table.lookup(
-        identifier_name.strip())
+# Process variable assignment
+def get_variable_value(assignation_start):
+    semicolon_index = content.find(';', assignation_start)
+    if semicolon_index != -1:
+        value_line = content[assignation_start + 1:semicolon_index]
+        variable_value = value_line.strip()
+
+        return variable_value
+
+
+def symbols_table_type(identifier_name, identifier_type):
+    id_name = identifier_name.strip()
+
+    already_in_symTable = obj_symbols_table.lookup(id_name)
 
     if already_in_symTable:
         obj_symbols_table.update_attributes(
-            identifier_name.strip(), {"type": identifier_type, "value": identifier_name, "scope": "global"})
+            id_name, {'type': identifier_type, 'value': None, 'scope': 'global'})
 
     else:
         obj_symbols_table.insert(
-            identifier_name.strip(), {"type": identifier_type, "value": None, "scope": "global"})
+            id_name, {'type': identifier_type, 'value': None, 'scope': 'global'})
 
+
+def symbols_table_value(identifier_name, identifier_value):
+    id_name = identifier_name.strip()
+
+    already_in_symTable = obj_symbols_table.lookup(id_name)
+
+    if already_in_symTable:
+        obj_symbols_table.update_attributes(
+            id_name, {'value': identifier_value})
+
+
+process_variable_declarations(content)
 
 # Review code ------------------------------------------------------------------------
 word_type = ''
 
 for i, char in enumerate(content):
+
+    last_word_type = word_type
 
     if i == 0:
         if check_first_symbol():
@@ -201,6 +229,18 @@ for i, char in enumerate(content):
             # Exclude the current character
             word_type = check_word(word.strip())
             if word_type:
+
+                if word_type == 'cadena' and len(word.strip()) == 3:
+                    word_type = 'caracter'
+
+                if word_type == 'id':
+                    current_id = word
+
+                if word_type == '=' and last_word_type == 'id':
+                    var_value = get_variable_value(i)
+                    if check_word(var_value):
+                        symbols_table_value(current_id, var_value)
+
                 lexer_write(word_type)
                 word = ''  # Reset the word to start accumulating the next word
                 current_state = 'q0'
@@ -216,5 +256,5 @@ file_path = 'syntax.py'
 # Execute the Python file
 subprocess.run(['python', file_path])
 '''
-process_variable_declarations(content)
+
 obj_symbols_table.print_table()
