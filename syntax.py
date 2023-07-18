@@ -79,7 +79,7 @@ class SyntaxAnalyzer:
 
     def tipos(self):
         # Production rule: TIPOS -> ESTANDAR | VECTORES
-        if self.current_token in ['int', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
+        if self.current_token in ['entero', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
             self.estandar()
         elif self.current_token == 'arreglo':
             self.vectores()
@@ -89,7 +89,7 @@ class SyntaxAnalyzer:
 
     def estandar(self):
         # Production rule: ESTANDAR -> int | real | cadena | byte | caracter | booleano
-        if self.current_token in ['int', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
+        if self.current_token in ['entero', 'real', 'cadena', 'byte', 'caracter', 'booleano']:
             self.match(self.current_token)
         else:
             raise SyntaxError(

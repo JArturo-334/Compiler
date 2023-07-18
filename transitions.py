@@ -172,7 +172,7 @@ reserved_words = {
     'fin_sino',
 
     'variable',
-    'int',
+    'entero',
     'cadena',
     'real',
     'caracter',
@@ -195,7 +195,7 @@ reserved_words = {
 }
 
 data_types = {
-    'int',
+    'entero',
     'cadena',
     'real',
     'caracter',

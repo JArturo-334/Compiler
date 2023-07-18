@@ -1,11 +1,11 @@
 $ programa $example ;
-variable $id1 : int ;
+variable $id1 : entero ;
 variable $id2 : real ;
 variable $id3 : cadena ;
-variable $id4 : int ;
+variable $id4 : entero ;
 variable $id5 : caracter ;
 variable $id6 : booleano ;
-variable $id7 : arreglo [ int .. int ] de real ;
+variable $id7 : arreglo [ entero .. entero ] de real ;
 { 
     $id1 = 10 ;
     $id2 = 3.14 ;
