@@ -26,9 +26,12 @@ class SymbolTable:
             for i, entry in enumerate(entries):
                 if entry[0] == identifier:
                     current_attributes = entry[1]
-                    current_attributes.update(new_attributes)
-                    entries[i] = (identifier, current_attributes)
-                    return True  # Attribute updated successfully
+                    if 'type' in current_attributes:
+                        current_attributes.update(new_attributes)
+                        entries[i] = (identifier, current_attributes)
+                        return True  # Attribute updated successfully
+                    else:
+                        return False  # Identifier doesn't have a type attribute yet
         return False  # Identifier not found or attribute not updated
 
     def print_table(self):
@@ -47,7 +50,7 @@ class SymbolTable:
 symbol_table = SymbolTable()
 
 # Inserting identifiers with attributes into the symbol table
-symbol_table.insert("x", {"type": "int", "value": 10})
+symbol_table.insert("x", {"value": 10})
 symbol_table.insert("y", {"type": "float", "value": 3.14})
 symbol_table.insert("z", {"type": "string", "value": "Hello"})
 
