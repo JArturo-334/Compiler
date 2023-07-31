@@ -246,6 +246,7 @@ def symbols_table_value(identifier_name, identifier_value):
 
         else:
             identifier_value = 'Not correct data type'
+            print(f'{identifier_name.strip()}: {identifier_value}')
             update()
 
     else:

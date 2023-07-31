@@ -6,9 +6,8 @@ variable $id4 : entero ;
 variable $id5 : caracter ;
 variable $id6 : booleano ;
 variable $id7 : arreglo [ entero .. entero ] de entero ;
-variable $id8 : arreglo [ real .. real ] de real ;
 { 
-    $id1 = 10 ;
+    $id1 = 5 ;
     $id2 = 3.14 ;
     $id3 = 'Hello world!' ;
     $id4 = 255 ;

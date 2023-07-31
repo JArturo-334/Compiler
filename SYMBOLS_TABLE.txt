@@ -1,8 +1,7 @@
-Variable: $id1, Attributes: {'type': 'entero', 'value': '10', 'scope': 'global'} 
+Variable: $id1, Attributes: {'type': 'entero', 'value': '5', 'scope': 'global'} 
 Variable: $id2, Attributes: {'type': 'real', 'value': '3.14', 'scope': 'global'} 
 Variable: $id3, Attributes: {'type': 'cadena', 'value': "'Hello world!'", 'scope': 'global'} 
 Variable: $id4, Attributes: {'type': 'entero', 'value': '255', 'scope': 'global'} 
 Variable: $id5, Attributes: {'type': 'caracter', 'value': "'A'", 'scope': 'global'} 
 Variable: $id6, Attributes: {'type': 'booleano', 'value': 'verdadero', 'scope': 'global'} 
 Variable: $id7, Attributes: {'type': 'arreglo', 'value': ['8', '50'], 'scope': 'global'} 
-Variable: $id8, Attributes: {'type': 'arreglo', 'value': [], 'scope': 'global'} 
