@@ -205,11 +205,15 @@ def get_variable_value_arr(assignation_start):
             var_arreglo_index = match.group(1)
             var_arreglo_value = match.group(2).strip()
 
-        if arithmetics.is_valid_expression(var_arreglo_value):
-            var_arreglo_value = arithmetics.evaluate_expression(
-                var_arreglo_value)
+            if arithmetics.is_valid_expression(var_arreglo_value):
+                var_arreglo_value = arithmetics.evaluate_expression(
+                    var_arreglo_value)
 
-        return var_arreglo_value, var_arreglo_index
+        else:
+            var_arreglo_index = ''
+            var_arreglo_value = ''
+
+    return var_arreglo_value, var_arreglo_index
 
 
 def symbols_table_type(identifier_name, identifier_type):
@@ -370,8 +374,10 @@ for i, char in enumerate(content):
                         symbols_table_value(current_id, var_value)
 
                 if word_type == '[' and last_word_type == 'id':
+
                     var_value, var_index = get_variable_value_arr(i)
                     var_value_type = check_word(var_value)
+
                     if var_value_type and var_index:
                         values_arreglo(
                             current_id, var_value, var_index)
