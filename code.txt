@@ -7,12 +7,12 @@ variable $id5 : caracter ;
 variable $id6 : booleano ;
 variable $id7 : arreglo [ entero .. entero ] de entero ;
 { 
-    $id1 = 5 ;
-    $id2 = 3.14 ;
+    $id1 = 5 * 20 / 2 ;
+    $id2 = 3.14 + 12.5 ;
     $id3 = 'Hello world!' ;
     $id4 = 255 ;
     $id5 = 'A' ;
     $id6 = verdadero ;
-    $id7[0] = 8 ;
+    $id7[0] = 8 + 2;
     $id7[1] = 50 ;
 } .

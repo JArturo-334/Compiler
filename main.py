@@ -2,6 +2,7 @@ import subprocess
 import re
 import transitions
 import symbol_table
+import arithmetics
 
 transition_table = transitions.transition_table
 accepting_states = transitions.accepting_states
@@ -186,6 +187,8 @@ def get_variable_value(assignation_start):
     if semicolon_index != -1:
         value_line = content[assignation_start + 1:semicolon_index]
         variable_value = value_line.strip()
+        if arithmetics.is_valid_expression(variable_value):
+            variable_value = arithmetics.evaluate_expression(variable_value)
 
         return variable_value
 
