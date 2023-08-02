@@ -197,9 +197,17 @@ def get_variable_value_arr(assignation_start):
     semicolon_index = content.find(';', assignation_start)
     if semicolon_index != -1:
         value_line = content[assignation_start + 1:semicolon_index]
-        result = re.findall(r'\d+(?:\.\d+)?', value_line)
-        var_arreglo_index = result[0]
-        var_arreglo_value = result[1]
+
+        # Use regular expression to extract the index and expression
+        match = re.match(r'(\d+)\s*\]\s*=\s*(.*)', value_line)
+
+        if match:
+            var_arreglo_index = match.group(1)
+            var_arreglo_value = match.group(2).strip()
+
+        if arithmetics.is_valid_expression(var_arreglo_value):
+            var_arreglo_value = arithmetics.evaluate_expression(
+                var_arreglo_value)
 
         return var_arreglo_value, var_arreglo_index
 
