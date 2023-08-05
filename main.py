@@ -186,11 +186,38 @@ def get_variable_value(assignation_start):
     semicolon_index = content.find(';', assignation_start)
     if semicolon_index != -1:
         value_line = content[assignation_start + 1:semicolon_index]
-        variable_value = value_line.strip()
+        variable_value = value_line.strip().split()
+
+        variable_value = change_id_to_value(variable_value)
+        variable_value = ' '.join(variable_value)
+
         if arithmetics.is_valid_expression(variable_value):
             variable_value = arithmetics.evaluate_expression(variable_value)
 
         return variable_value
+
+
+def change_id_to_value(list_val):
+    for i, var_token in enumerate(list_val):
+        if check_word(var_token) == 'id':
+            if obj_symbols_table.lookup(var_token):
+                var_token_value = obj_symbols_table.get_attribute(
+                    var_token, 'value')
+                var_token_type = obj_symbols_table.get_attribute(
+                    var_token, 'type')
+                if var_token_value == 'None':
+                    print(var_token, ': undefined')
+                    break
+
+                if var_token_type == 'entero' or var_token_type == 'real':
+                    list_val[i] = var_token_value
+                else:
+                    print('Can\'t perform operations with',
+                          var_token, 'type: ', var_token_type)
+            else:
+                print('Error: ', var_token, 'has not been declared')
+
+    return list_val
 
 
 def get_variable_value_arr(assignation_start):
@@ -203,7 +230,10 @@ def get_variable_value_arr(assignation_start):
 
         if match:
             var_arreglo_index = match.group(1)
-            var_arreglo_value = match.group(2).strip()
+            var_arreglo_value = match.group(2).strip().split()
+
+            var_arreglo_value = change_id_to_value(var_arreglo_value)
+            var_arreglo_value = ' '.join(var_arreglo_value)
 
             if arithmetics.is_valid_expression(var_arreglo_value):
                 var_arreglo_value = arithmetics.evaluate_expression(
@@ -227,7 +257,7 @@ def symbols_table_type(identifier_name, identifier_type):
 
     else:
         obj_symbols_table.insert(
-            id_name, {'type': identifier_type, 'value': None, 'scope': 'global'})
+            id_name, {'type': identifier_type, 'value': 'None', 'scope': 'global'})
 
 
 def symbols_table_value(identifier_name, identifier_value):
@@ -260,8 +290,8 @@ def symbols_table_value(identifier_name, identifier_value):
             update()
 
         else:
-            identifier_value = 'Not correct data type'
-            print(f'{identifier_name.strip()}: {identifier_value}')
+            identifier_value = 'None'
+            print(f'{identifier_name.strip()}: Invalid data type')
             update()
 
     else:
